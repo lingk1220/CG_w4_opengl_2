@@ -17,6 +17,10 @@ void main_init();
 void draw_background();
 void color_init();
 void clamp_pos(GLfloat* input_pos);
+int check_quadrant(GLfloat* pos);
+int check_inout(int quad, GLfloat* pos);
+
+void mouse_functions(int quadrant, int inout);
 
 GLfloat colors_background[4][4] = { 0, };
 void main(int argc, char** argv)
@@ -70,7 +74,11 @@ void Mouse(int button, int state, int x, int y)
 {
 	GLfloat input_pos[2] = { x, y };
 	clamp_pos(input_pos);
-	
+	int quadrant = check_quadrant(input_pos);
+	int inout = check_inout(quadrant, input_pos);
+	std::cout << quadrant << " " << inout << std::endl;
+	mouse_functions(quadrant, inout);
+
 	if (button == GLUT_LEFT_BUTTON && state == GLUT_DOWN) {
 		std::cout << input_pos[0] << " " << input_pos[1] << std::endl;
 		glutPostRedisplay();
@@ -118,4 +126,29 @@ void clamp_pos(GLfloat * input_pos) {
 	int viewport_height = viewport[3];
 	input_pos[0] = (input_pos[0] / viewport_width) * 2 - 1.0f;
 	input_pos[1] = -1*((input_pos[1] / viewport_height) * 2 - 1.0f);
+}
+
+int check_quadrant(GLfloat* pos) {
+	if (pos[0] < 0) {
+		if (pos[1] < 0) return 2;
+		return 1;
+	}
+	else
+	{
+		if (pos[1] < 0) return 3;
+		return 0;
+	}
+}
+
+int check_inout(int quad, GLfloat*pos) {
+	if (quadrant_x[quad] + 0.25f < pos[0] && pos[0] < quadrant_x[quad] + 0.75f) {
+		if (quadrant_y[quad] + 0.25f < pos[1] && pos[1] < quadrant_y[quad] + 0.75f) {
+			return 1;
+		}
+	}
+	return 0;
+}
+
+void mouse_functions(int quadrant, int inout) {
+
 }
