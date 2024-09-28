@@ -9,10 +9,11 @@
 GLfloat quadrant_x[4] = { 0.0f, -1.0f, -1.0f, 0.0f };
 GLfloat quadrant_y[4] = { 0.0f, 0.0f, -1.0f, -1.0f };
 
-GLclampf colors[4][4] = { {0.1f, 0.2f, 0.3f, 0.0f} , 
+GLclampf colors[5][4] = { {0.1f, 0.2f, 0.3f, 0.0f} ,
 						  {0.4f, 0.5f, 0.6f, 0.0f} ,
 						  {0.7f, 0.8f, 0.9f, 0.0f} ,
-						  {0.4f, 0.6f, 0.8f, 0.0f} };
+						  {0.4f, 0.6f, 0.8f, 0.0f} ,
+						  {0.2f, 0.5f, 0.8f, 0.0f} };
 
 
 GLvoid drawScene(GLvoid);
@@ -30,9 +31,9 @@ void mouse_functions(int button, int quadrant, int inout);
 void rect_change_color(int quadrant, int inout);
 void rect_change_size(int quadrant, int inout);
 
-GLfloat colors_background[4][4] = { 0, };
+GLfloat colors_background[4] = { 0, };
 GLfloat colors_rect[4][4] = { 0, };
-float size_rect[4] = { 0.5f, 0.5f, 0.5f, 0.5f };
+float size_rect[4] = { 1.0f, 1.0f, 1.0f, 1.0f };
 
 void main(int argc, char** argv)
 {
@@ -88,7 +89,6 @@ void Mouse(int button, int state, int x, int y)
 	if (state == GLUT_DOWN) {
 		int quadrant = check_quadrant(input_pos);
 		int inout = check_inout(quadrant, input_pos);
-		std::cout << quadrant << " " << inout << std::endl;
 		mouse_functions(button, quadrant, inout);
 		glutPostRedisplay();
 	}
@@ -98,11 +98,12 @@ void Mouse(int button, int state, int x, int y)
 void color_init() {
 	for (int i = 0; i < 4; i++) {
 		for (int j = 0; j < 4; j++) {
-			colors_background[i][j] = colors[i][j];
 			colors_rect[i][j] = colors[i][j] + 0.1f;
 		}
 	}
-
+	for (int i = 0; i < 4; i++) {
+		colors_background[i] = colors[4][i];
+	}
 }
 
 void main_init() {
@@ -111,10 +112,8 @@ void main_init() {
 }
 
 void draw_background() {
-	for (int i = 0; i < 4; i++) {
-			glColor3f(colors_background[i][0], colors_background[i][1], colors_background[i][2]);
-			glRectf(quadrant_x[i], quadrant_y[i], quadrant_x[i] + 1.0f, quadrant_y[i] + 1.0f);
-	}
+			glColor3f(colors_background[0], colors_background[1], colors_background[2]);
+			glRectf(-1.0f, -1.0f, 1.0f, 1.0f);
 }
 
 void draw_rect() {
@@ -176,7 +175,7 @@ void rect_change_color(int quadrant, int inout) {
 	}
 	else {
 		for (int i = 0; i < 3; i++) {
-			colors_background[quadrant][i] = (GLfloat)(rand() % 256) / 256;
+			colors_background[i] = (GLfloat)(rand() % 256) / 256;
 		}
 		return;
 	}
