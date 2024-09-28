@@ -26,7 +26,9 @@ void clamp_pos(GLfloat* input_pos);
 int check_quadrant(GLfloat* pos);
 int check_inout(int quad, GLfloat* pos);
 void draw_rect();
-void mouse_functions(int quadrant, int inout);
+void mouse_functions(int button, int quadrant, int inout);
+void rect_change_color(int quadrant, int inout);
+void rect_change_size();
 
 GLfloat colors_background[4][4] = { 0, };
 GLfloat colors_rect[4][4] = { 0, };
@@ -82,15 +84,14 @@ void Mouse(int button, int state, int x, int y)
 {
 	GLfloat input_pos[2] = { x, y };
 	clamp_pos(input_pos);
-	int quadrant = check_quadrant(input_pos);
-	int inout = check_inout(quadrant, input_pos);
-	std::cout << quadrant << " " << inout << std::endl;
-	mouse_functions(quadrant, inout);
-
-	if (button == GLUT_LEFT_BUTTON && state == GLUT_DOWN) {
-		std::cout << input_pos[0] << " " << input_pos[1] << std::endl;
+	if (state == GLUT_DOWN) {
+		int quadrant = check_quadrant(input_pos);
+		int inout = check_inout(quadrant, input_pos);
+		std::cout << quadrant << " " << inout << std::endl;
+		mouse_functions(button, quadrant, inout);
 		glutPostRedisplay();
 	}
+
 }	
 
 void color_init() {
@@ -152,10 +153,34 @@ int check_inout(int quad, GLfloat*pos) {
 	return 0;
 }
 
-void mouse_functions(int quadrant, int inout) {
+void mouse_functions(int button, int quadrant, int inout) {
+
+	switch (button) {
+	case GLUT_LEFT_BUTTON:
+		rect_change_color(quadrant, inout);
+		break;
+
+	case GLUT_RIGHT_BUTTON:
+
+		break;
+	}
+
 	switch (inout) {
 	case 1:
 
 		break;
 	}
+}
+
+void rect_change_color(int quadrant, int inout) {
+	if (inout == 1) {
+		for (int i = 0; i < 3; i++) {
+			colors_rect[quadrant][i] = (GLfloat)(rand() % 256) / 256;
+		}
+		return;
+	}
+}
+
+void rect_change_size() {
+
 }
