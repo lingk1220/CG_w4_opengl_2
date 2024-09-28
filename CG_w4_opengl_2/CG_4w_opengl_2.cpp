@@ -2,6 +2,7 @@
 #include <gl/glew.h> 
 #include <gl/freeglut.h>
 #include <gl/freeglut_ext.h>
+
 #define WINDOWWIDTH 800
 #define WINDOWHEIGHT 600
 
@@ -15,6 +16,7 @@ void Mouse(int button, int state, int x, int y);
 void main_init();
 void draw_background();
 void color_init();
+void clamp_pos(GLfloat* input_pos);
 
 GLfloat colors_background[4][4] = { 0, };
 void main(int argc, char** argv)
@@ -66,8 +68,11 @@ GLvoid Keyboard(unsigned char key, int x, int y)
 
 void Mouse(int button, int state, int x, int y)
 {
+	GLfloat input_pos[2] = { x, y };
+	clamp_pos(input_pos);
+	
 	if (button == GLUT_LEFT_BUTTON && state == GLUT_DOWN) {
-
+		std::cout << input_pos[0] << " " << input_pos[1] << std::endl;
 		glutPostRedisplay();
 	}
 }	
@@ -104,4 +109,13 @@ void draw_background() {
 			glColor3f(colors_background[i][0], colors_background[i][1], colors_background[i][2]);
 			glRectf(quadrant_x[i], quadrant_y[i], quadrant_x[i] + 1.0f, quadrant_y[i] + 1.0f);
 	}
+}
+
+void clamp_pos(GLfloat * input_pos) {
+	GLint viewport[4];
+	glGetIntegerv(GL_VIEWPORT, viewport);
+	int viewport_width = viewport[2];
+	int viewport_height = viewport[3];
+	input_pos[0] = (input_pos[0] / viewport_width) * 2 - 1.0f;
+	input_pos[1] = -1*((input_pos[1] / viewport_height) * 2 - 1.0f);
 }
