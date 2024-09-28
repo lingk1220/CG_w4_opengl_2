@@ -8,6 +8,7 @@
 GLvoid drawScene(GLvoid);
 GLvoid Reshape(int w, int h);
 GLvoid Keyboard(unsigned char key, int x, int y);
+void Mouse(int button, int state, int x, int y);
 
 void main(int argc, char** argv)
 {
@@ -25,9 +26,10 @@ void main(int argc, char** argv)
 		exit(EXIT_FAILURE);
 	}
 	else
-		glutDisplayFunc(drawScene);
+	glutDisplayFunc(drawScene);
 	glutReshapeFunc(Reshape);
 	glutKeyboardFunc(Keyboard);
+	glutMouseFunc(Mouse);
 	glutMainLoop();
 }
 
@@ -48,11 +50,15 @@ GLvoid Reshape(int w, int h)
 GLvoid Keyboard(unsigned char key, int x, int y)
 {
 	switch (key) {
-	case 'c':
-		break;
 	case 'q':
 		glutLeaveMainLoop();
 		break;
 	}
 	glutPostRedisplay();
+}
+
+void Mouse(int button, int state, int x, int y)
+{
+	if (button == GLUT_LEFT_BUTTON && state == GLUT_DOWN)
+		std::cout << "x = " << x << " y = " << y << std::endl;
 }
