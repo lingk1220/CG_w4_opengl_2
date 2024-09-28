@@ -28,10 +28,11 @@ int check_inout(int quad, GLfloat* pos);
 void draw_rect();
 void mouse_functions(int button, int quadrant, int inout);
 void rect_change_color(int quadrant, int inout);
-void rect_change_size();
+void rect_change_size(int quadrant, int inout);
 
 GLfloat colors_background[4][4] = { 0, };
 GLfloat colors_rect[4][4] = { 0, };
+float size_rect[4] = { 0.5f, 0.5f, 0.5f, 0.5f };
 
 void main(int argc, char** argv)
 {
@@ -119,7 +120,7 @@ void draw_background() {
 void draw_rect() {
 	for (int i = 0; i < 4; i++) {
 		glColor3f(colors_rect[i][0], colors_rect[i][1], colors_rect[i][2]);
-		glRectf(quadrant_x[i] + 0.25f, quadrant_y[i] + 0.25f, quadrant_x[i] + 0.75f, quadrant_y[i] + 0.75f);
+		glRectf(quadrant_x[i] + 0.5f - size_rect[i]/2, quadrant_y[i] + 0.5f - size_rect[i]/2, quadrant_x[i] + 0.5f + size_rect[i]/2, quadrant_y[i] + 0.5f + size_rect[i]/2);
 	}
 }
 
@@ -145,8 +146,8 @@ int check_quadrant(GLfloat* pos) {
 }
 
 int check_inout(int quad, GLfloat*pos) {
-	if (quadrant_x[quad] + 0.25f < pos[0] && pos[0] < quadrant_x[quad] + 0.75f) {
-		if (quadrant_y[quad] + 0.25f < pos[1] && pos[1] < quadrant_y[quad] + 0.75f) {
+	if (quadrant_x[quad] + 0.5f - size_rect[quad]/2 < pos[0] && pos[0] < quadrant_x[quad] + 0.5f + size_rect[quad]/2) {
+		if (quadrant_y[quad] + 0.5f - size_rect[quad]/2 < pos[1] && pos[1] < quadrant_y[quad] + 0.5f + size_rect[quad]/2) {
 			return 1;
 		}
 	}
@@ -161,13 +162,7 @@ void mouse_functions(int button, int quadrant, int inout) {
 		break;
 
 	case GLUT_RIGHT_BUTTON:
-
-		break;
-	}
-
-	switch (inout) {
-	case 1:
-
+		rect_change_size(quadrant, inout);
 		break;
 	}
 }
@@ -187,6 +182,17 @@ void rect_change_color(int quadrant, int inout) {
 	}
 }
 
-void rect_change_size() {
-
+void rect_change_size(int quadrant, int inout) {
+	if (inout == 1) {
+		if (size_rect[quadrant] > 0.11f) {
+			size_rect[quadrant] -= 0.1f;
+		}
+		return;
+	}
+	else {
+		//if (size_rect[quadrant] < 1.0f) {
+			size_rect[quadrant] += 0.1f;
+		//}
+		return;
+	}
 }
