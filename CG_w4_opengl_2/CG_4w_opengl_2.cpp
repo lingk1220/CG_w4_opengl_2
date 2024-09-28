@@ -179,6 +179,12 @@ void rect_change_color(int quadrant, int inout) {
 		}
 		return;
 	}
+	else {
+		for (int i = 0; i < 3; i++) {
+			colors_background[quadrant][i] = (GLfloat)(rand() % 256) / 256;
+		}
+		return;
+	}
 }
 
 void rect_change_size() {
